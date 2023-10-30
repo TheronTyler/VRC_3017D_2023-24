@@ -8,6 +8,20 @@
 /*----------------------------------------------------------------------------*/
 
 #include "vex.h"
+
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Controller1          controller                    
+// fLDrive              motor         13              
+// bLDrive              motor         12              
+// fRDrive              motor         18              
+// bRDrive              motor         17              
+// intake               motor         19              
+// cata1                motor         11              
+// cata2                motor         15              
+// Rotation16           rotation      16              
+// ---- END VEXCODE CONFIGURED DEVICES ----
 using namespace vex;
 competition Competition;
 
@@ -71,6 +85,8 @@ void autonomous(void) {
   mind('a',1, 0.5);//turn 
 
   mind('w',4, 3.88);//towards center
+
+  mind('a',1, 0.5);//turn to shoot
   motor_group(cata1, cata2).spin(fwd, 100, pct);
 }
 
