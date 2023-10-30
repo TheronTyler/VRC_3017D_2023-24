@@ -53,28 +53,25 @@ void mind(char cmd,float delay,float revolution) {
     motor_group(fLDrive, bLDrive, fRDrive, bRDrive).stop();
     break;
   case 'q':  
-    if (cataRot.angle() < 78 || cataRot.angle() > 90) {
-      motor_group(cata1, cata2).spin(fwd, 100, pct);
-
-    } else if (true){//needs variable{
-      motor_group(cata1, cata2).spin(fwd, 100, pct);
-
-    } else {
-      motor_group(cata1, cata2).stop(brakeType::hold);
-    }    break;
+    motor_group(cata1, cata2).spinFor(fwd, revolution, rev, false);
+    wait(0.5, sec);
+        break;
   default:
     break;
   }
-} //w=fwd/back -=back +=fwd
+}
+ //w=fwd/back -=back +=fwd
 
 void autonomous(void) {
   mind('w',.5,-2.4); //push preload into goal
   mind('w',1,1.75);  //back off goal
 
-  mind('a',1,-0.35); //aim cata twoard goal
+  mind('a',1,-0.35); //aim cata toward red goal
 
-  //catapult fire fifteen (15) times w/ 0.5sec delay in between
+  mind('w',1,-1); //back onto match load bar
 
+  mind('q',8,100);//catapult fire fifteen (15) times w/ 0.5sec delay in between and 0.5 sec extra time
+  
   mind('w',0.75,-2.35); //drive away from match load
 
   mind('a',1,-2); //turn to face opposite wall
