@@ -8,9 +8,7 @@
 /*----------------------------------------------------------------------------*/
 
 #include "vex.h"
-
 using namespace vex;
-
 competition Competition;
 
 //Devices
@@ -20,8 +18,8 @@ motor fLDrive = motor(PORT20, true);
 motor bLDrive = motor(PORT19, true);
 motor fRDrive = motor(PORT11);
 motor bRDrive = motor(PORT12);
-motor intake = motor(PORT9);
-motor flywheel = motor(PORT11);
+motor intake = motor(PORT9, true);
+motor flywheel = motor(PORT8, true);
 motor lLift = motor(PORT10, true);
 motor rLift = motor(PORT1);
 
@@ -33,11 +31,12 @@ void pre_auton(void) {
 motor_group(fLDrive, bLDrive, fRDrive, bRDrive).setStopping(coast);
 intake.setStopping(brake);
 motor_group(lLift, rLift).setStopping(brake);
+flywheel.setStopping(coast);
 bool open = false;
 }
 
 int intakeVelocity = 85; //pct
-int launchVelocity = 95;
+int flywheelVelocity = 95;
 bool open = false;
 
 void mind(char cmd,float delay,float revolutions) {
@@ -90,7 +89,6 @@ void autonomous(void) {
 }
 
 void usercontrol(void) {
-
 while (1) {
   //Drive
   int lateral = Controller1.Axis3.position(pct);
@@ -100,13 +98,11 @@ while (1) {
   motor_group(fRDrive, bRDrive).spin(fwd, lateral - rotational, pct);
 
   //Intake
-  if (Controller1.ButtonR1.pressing() || Controller1.ButtonR2.pressing()) {
-    if (Controller1.ButtonR1.pressing()) {
-      intake.spin(fwd, intakeVelocity, pct);
-    }
-    else if (Controller1.ButtonR2.pressing()) {
-        intake.spin(reverse, intakeVelocity, pct);
-    }
+  if (Controller1.ButtonR1.pressing()) {
+  intake.spin(fwd, intakeVelocity, pct);
+  }
+  else if (Controller1.ButtonR2.pressing()) {
+  intake.spin(reverse, intakeVelocity, pct);
   }
   else {
     intake.stop();
@@ -126,21 +122,13 @@ while (1) {
     }
 
   //Flywheel
-  int Tog=1;
-  bool Ripressed=false;
-
-  if(Controller1.ButtonUp.pressing()){
-    Ripressed=true;
+  if (Controller1.ButtonUp.pressing()){
+    flywheel.spin(fwd, flywheelVelocity, pct);
   }
-  else{
-    Ripressed=false;
-  }
-  if(Tog<1){
-    flywheel.spin(fwd, 85,pct);
-  }
-  else{
+  else {
     flywheel.stop();
   }
+  
   //flaps   *NOT COMPLETE*
   if (Controller1.ButtonLeft.pressing()) {
     if(open){
