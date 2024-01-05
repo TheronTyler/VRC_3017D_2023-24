@@ -42,6 +42,7 @@ bool open = false;
 void mind(char cmd,float delay,float revolutions) {
   switch (cmd) {
   case 'w': //forward motion
+    motor_group(fLDrive, bLDrive, fRDrive, bRDrive).setVelocity(40, pct);
     motor_group(fLDrive, bLDrive, fRDrive, bRDrive).spinFor(fwd, revolutions, rev, false);
     wait(delay, sec);
     motor_group(fLDrive, bLDrive, fRDrive, bRDrive).stop();
@@ -53,6 +54,7 @@ void mind(char cmd,float delay,float revolutions) {
     motor_group(fLDrive, bLDrive, fRDrive, bRDrive).stop();
     break;
   case 'i': //intake
+    intake.setVelocity(100,pct);
     intake.spinFor(fwd, revolutions, rev, false);
     wait(delay, sec);
     intake.stop();
@@ -61,27 +63,27 @@ void mind(char cmd,float delay,float revolutions) {
 }
 
 void autonomous(void) {
-  mind('w',2.5,7);//'w' is calling the case, 1 is time in seconds, -4 is revolutions of the motor //Drive to front of goal
+  mind('w',2.135,8.5);//'w' is calling the case, 1 is time in seconds, -4 is revolutions of the motor //Drive to front of goal
   
-  mind('a',1.5,1);//Turn to goal
+  mind('a',.4,.5);//Turn to goal
 
   mind('i',1,-2.5);//Deposite alliance triball to the goal
 
-  mind('w',.5,1.25);//Push triball into goal
-  mind('w',1,-2.125);//back off goal
+  mind('w',1,1.125);//Push triball into 
+  mind('w',1,-2);//back off goal
 
-  mind('a',1.5,-1);//turn to triball
+  mind('a',1,-1);//turn to triball
 
   motor_group(fLDrive, bLDrive, fRDrive, bRDrive).spinFor(fwd,2,rev, false);
-  intake.spinFor(fwd,10,rev,false);
-  wait(3,sec);
+  intake.spinFor(fwd,20,rev,false);
+  wait(1,sec);
   motor_group(fLDrive, bLDrive, fRDrive, bRDrive, intake).stop();
 
-  mind('w',1,-2);//re-align with goal
+  mind('w',1,-1);//re-align with barrier
 
-  mind('a',1.125,1);//turn to goal
+  mind('a',1,1);//turn to goal
 
-  mind('w',1,2.125);//drive to goal
+  mind('w',1,2);//drive to goal
 
   mind('i',1,-2.5);//Deposite alliance triball to the goal
 
@@ -129,7 +131,7 @@ while (1) {
     flywheel.stop();
   }
   
-  //flaps   *NOT COMPLETE*
+  //Flaps   *NOT COMPLETE*
   if (Controller1.ButtonLeft.pressing()) {
     if(open){
       flaps.set(false);
