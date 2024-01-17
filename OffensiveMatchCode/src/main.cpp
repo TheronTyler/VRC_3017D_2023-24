@@ -28,7 +28,7 @@ digital_out flaps = digital_out(Brain.ThreeWirePort.A);
 void pre_auton(void) {
 
 //Config
-motor_group(fLDrive, bLDrive, fRDrive, bRDrive).setStopping(coast);
+motor_group(fLDrive, bLDrive, fRDrive, bRDrive).setStopping(hold);
 intake.setStopping(brake);
 motor_group(lLift, rLift).setStopping(brake);
 flywheel.setStopping(coast);
@@ -42,12 +42,13 @@ bool open = false;
 void mind(char cmd,float delay,float revolutions) {
   switch (cmd) {
   case 'w': //forward motion
-    motor_group(fLDrive, bLDrive, fRDrive, bRDrive).setVelocity(40, pct);
+    motor_group(fLDrive, bLDrive, fRDrive, bRDrive).setVelocity(75, pct);
     motor_group(fLDrive, bLDrive, fRDrive, bRDrive).spinFor(fwd, revolutions, rev, false);
     wait(delay, sec);
     motor_group(fLDrive, bLDrive, fRDrive, bRDrive).stop();
     break;
   case 'a': //clockwise turn
+    motor_group(fLDrive, bLDrive, fRDrive, bRDrive).setVelocity(75, pct);
     motor_group(fLDrive, bLDrive ).spinFor(fwd, revolutions, rev, false);
     motor_group(fRDrive, bRDrive).spinFor(reverse, revolutions, rev, false);
     wait(delay, sec);
@@ -63,31 +64,37 @@ void mind(char cmd,float delay,float revolutions) {
 }
 
 void autonomous(void) {
-  mind('w',2.135,8.5);//'w' is calling the case, 1 is time in seconds, -4 is revolutions of the motor //Drive to front of goal
-  
-  mind('a',.4,.5);//Turn to goal
+  mind('w',2,3);//(Case,delay,revolutions)
+
+  mind('a',.35,.55);//Turn to goal
 
   mind('i',1,-2.5);//Deposite alliance triball to the goal
+  wait(15,msec);
 
   mind('w',1,1.125);//Push triball into 
-  mind('w',1,-2);//back off goal
+  mind('w',1,-1);//back off goal
 
-  mind('a',1,-1);//turn to triball
+  mind('a',1,-.88);//turn to triball
 
-  motor_group(fLDrive, bLDrive, fRDrive, bRDrive).spinFor(fwd,2,rev, false);
-  intake.spinFor(fwd,20,rev,false);
-  wait(1,sec);
+  motor_group(fLDrive, bLDrive, fRDrive, bRDrive).setVelocity(50,pct);
+  motor_group(fLDrive, bLDrive, fRDrive, bRDrive).spinFor(fwd,1.75,rev, false);
+  intake.spinFor(fwd,30,rev,false);
+  wait(1.5,sec);
   motor_group(fLDrive, bLDrive, fRDrive, bRDrive, intake).stop();
+  motor_group(fLDrive, bLDrive, fRDrive, bRDrive).setVelocity(75,pct);
 
   mind('w',1,-1);//re-align with barrier
 
-  mind('a',1,1);//turn to goal
+  mind('a',.875,.875);//turn to goal
 
-  mind('w',1,2);//drive to goal
+  mind('w',.5,.5);
 
-  mind('i',1,-2.5);//Deposite alliance triball to the goal
-
-  mind('w',.5,1.25);//Push triball into goal
+  motor_group(fLDrive, bLDrive, fRDrive, bRDrive).setVelocity(50,pct);
+  motor_group(fLDrive, bLDrive, fRDrive, bRDrive).spinFor(fwd,1.85,rev, false);
+  intake.spinFor(reverse,30,rev,false);
+  wait(1.5,sec);
+  motor_group(fLDrive, bLDrive, fRDrive, bRDrive, intake).stop();
+  motor_group(fLDrive, bLDrive, fRDrive, bRDrive).setVelocity(75,pct);
 }
 
 void usercontrol(void) {
